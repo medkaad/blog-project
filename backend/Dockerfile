@@ -1,17 +1,23 @@
-FROM python:3.12
+# Backend Dockerfile - Python + Django
+FROM python:3.12-slim
 
-ENV PYTHONUNBUFFERED=1
-
+# Répertoire de travail
 WORKDIR /app
 
-# installer pg_isready
-RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
+# Installer les dépendances système pour PostgreSQL et Python
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Copier requirements et installer
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
+# Copier tout le projet
+COPY . .
 
-CMD ["sh", "entrypoint.sh"]
+# Entrypoint
+ENTRYPOINT ["sh", "entrypoint.sh"]
 

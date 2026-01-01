@@ -13,14 +13,13 @@ services:
 
   backend:
     build: ./backend
-    command: sh entrypoint.sh
     volumes:
       - ./backend:/app
-      - static-volume:/app/staticfiles   # <-- volume partagé pour staticfiles
     ports:
       - "8000:8000"
     environment:
       DB_HOST: db
+      DB_PORT: 5432
       DB_NAME: blog
       DB_USER: user
       DB_PASSWORD: password
@@ -38,12 +37,11 @@ services:
       - "8080:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - static-volume:/app/staticfiles       # <-- même volume que backend
+      - ./backend/staticfiles:/app/staticfiles
     depends_on:
-      - frontend
       - backend
+      - frontend
 
 volumes:
   postgres-data:
-  static-volume:        # <-- volume pour partager staticfiles
 
