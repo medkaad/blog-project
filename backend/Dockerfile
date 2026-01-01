@@ -1,0 +1,17 @@
+FROM python:3.12
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# installer pg_isready
+RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /app/
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY . /app/
+
+CMD ["sh", "entrypoint.sh"]
+
