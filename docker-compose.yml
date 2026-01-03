@@ -13,21 +13,24 @@ services:
 
   backend:
     build: ./backend
+    command: sh entrypoint.sh
     volumes:
       - ./backend:/app
     ports:
       - "8000:8000"
     environment:
       DB_HOST: db
-      DB_PORT: 5432
       DB_NAME: blog
       DB_USER: user
       DB_PASSWORD: password
+      DB_PORT: 5432
     depends_on:
       - db
 
   frontend:
     build: ./frontend
+    volumes:
+      - ./frontend:/my-app
     ports:
       - "5173:5173"
 
@@ -37,7 +40,7 @@ services:
       - "8080:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./backend/staticfiles:/app/staticfiles
+      - ./backend/staticfiles:/app/backend/staticfiles:ro
     depends_on:
       - backend
       - frontend
